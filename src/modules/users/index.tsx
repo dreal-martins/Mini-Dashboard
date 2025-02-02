@@ -19,20 +19,24 @@ export default function Users() {
     searchQuery,
     setSearchQuery,
     isFetching,
+    isSuccess,
     refetchUser,
   } = useUsers();
-  const [sortedData, setSortedData] = useState<IUsers[]>(fetchData || []);
+
+  const [sortedData, setSortedData] = useState<IUsers[]>(fetchData);
 
   useEffect(() => {
-    if (!isFetching && fetchData && fetchData.length > 0) {
+    if (isSuccess && fetchData) {
       setSortedData(fetchData);
     }
-  }, [fetchData, isFetching]);
+  }, [fetchData, isSuccess]);
 
   const handleSortByName = () => {
-    const sorted = sortTableData<IUsers>(sortedData, "name");
-    setSortedData(sorted);
-    refetchUser();
+    if (fetchData) {
+      const sorted = sortTableData<IUsers>(fetchData, "name");
+      setSortedData(sorted);
+      refetchUser();
+    }
   };
 
   if (isFetching) {
@@ -44,7 +48,7 @@ export default function Users() {
       <div className="flex justify-between items-center md:p-3">
         <div className="md:w-[80%]">
           <TextField
-            placeholder={"Search User..."}
+            placeholder="Search User..."
             onChange={(e) => {
               setSearchQuery(e.target.value);
             }}
@@ -60,18 +64,20 @@ export default function Users() {
         </div>
       </div>
       <div className="h-[90%] border-b border-[#eee] py-2 overflow-y-scroll">
-        <UsersTable data={sortedData} />
+        <UsersTable data={sortedData.length > 0 ? sortedData : fetchData} />
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        rowsPerPage={itemsPerPage}
-        onPageChange={(page) => setCurrentPage(page)}
-        onRowsPerPageChange={(rows) => {
-          setItemsPerPage(rows);
-          setCurrentPage(1);
-        }}
-      />
+      {sortedData.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          rowsPerPage={itemsPerPage}
+          onPageChange={(page) => setCurrentPage(page)}
+          onRowsPerPageChange={(rows) => {
+            setItemsPerPage(rows);
+            setCurrentPage(1);
+          }}
+        />
+      )}
     </section>
   );
 }

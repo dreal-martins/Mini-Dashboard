@@ -99,6 +99,7 @@ export function useComments() {
     data = [],
     isLoading,
     isFetching,
+    isSuccess,
     refetch: refetchComment,
   } = useQuery<IComment[]>({
     queryKey: ["comments", currentPage, itemsPerPage, debouncedSearch],
@@ -189,6 +190,7 @@ export function useComments() {
   };
 
   return {
+    isSuccess,
     refetchComment,
     data,
     isLoading,

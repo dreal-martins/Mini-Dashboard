@@ -118,8 +118,8 @@ export function useUsers() {
     data: fetchData = [],
     isLoading,
     isFetching,
+    isSuccess,
     refetch: refetchUser,
-    isFetched,
   } = useQuery({
     queryKey: ["users", currentPage, itemsPerPage, debouncedSearch],
     queryFn: () => fetchUsers(currentPage),
@@ -194,7 +194,7 @@ export function useUsers() {
   };
 
   return {
-    isFetched,
+    isSuccess,
     refetchUser,
     isFetching,
     fetchData,

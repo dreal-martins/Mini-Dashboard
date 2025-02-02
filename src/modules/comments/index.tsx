@@ -20,14 +20,15 @@ export default function Comments() {
     searchQuery,
     setSearchQuery,
     refetchComment,
+    isSuccess,
   } = useComments();
   const [sortedData, setSortedData] = useState<IComment[]>(data);
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (isSuccess && data) {
       setSortedData(data);
     }
-  }, [data]);
+  }, [data, isSuccess]);
 
   const handleSortByEmail = () => {
     const sorted = sortTableData<IComment>(sortedData, "email");
@@ -61,7 +62,7 @@ export default function Comments() {
       </div>
 
       <div className="h-[90%] border-b border-[#eee] py-2 overflow-y-scroll">
-        {isFetching ? <Loader /> : <CommentsTable data={sortedData || []} />}
+        <CommentsTable data={sortedData.length > 0 ? sortedData : data} />
       </div>
 
       <Pagination
